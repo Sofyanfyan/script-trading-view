@@ -1,0 +1,50 @@
+//@version=5
+indicator("XAUUSD Fibonacci Trading Strategy - 15 Min", overlay=true)
+
+// Periksa jika ini adalah chart XAUUSD
+if (syminfo.tickerid != "FX:XAUUSD")
+    runtime.error("Script ini hanya untuk chart XAUUSD.")
+
+// Function to find the recent swing high and swing low
+var float swingHigh = na
+var float swingLow = na
+
+if (high > ta.highest(high[1], 20))
+    swingHigh := high
+if (low < ta.lowest(low[1], 20))
+    swingLow := low
+
+// Menentukan tren pasar
+ma_short = ta.sma(close, 20)
+ma_long = ta.sma(close, 50)
+uptrend = ma_short > ma_long
+downtrend = ma_short < ma_long
+
+// Inisialisasi level Fibonacci di tingkat global
+var float fib_0 = na
+var float fib_23_6 = na
+var float fib_38_2 = na
+var float fib_50 = na
+var float fib_61_8 = na
+var float fib_78_6 = na
+var float fib_100 = na
+
+// Hanya hitung Fibonacci jika ada tren
+if uptrend or downtrend
+    // Update nilai Fibonacci
+    fib_0 := swingLow
+    fib_23_6 := swingLow + (swingHigh - swingLow) * 0.236
+    fib_38_2 := swingLow + (swingHigh - swingLow) * 0.382
+    fib_50 := swingLow + (swingHigh - swingLow) * 0.5
+    fib_61_8 := swingLow + (swingHigh - swingLow) * 0.618
+    fib_78_6 := swingLow + (swingHigh - swingLow) * 0.786
+    fib_100 := swingHigh
+
+// Plot level Fibonacci di luar blok if
+plot(fib_0, title="Fibonacci 0%", color=color.red, linewidth=1)
+plot(fib_23_6, title="Fibonacci 23.6%", color=color.orange, linewidth=1)
+plot(fib_38_2, title="Fibonacci 38.2%", color=color.yellow, linewidth=1)
+plot(fib_50, title="Fibonacci 50%", color=color.green, linewidth=1)
+plot(fib_61_8, title="Fibonacci 61.8%", color=color.blue, linewidth=1)
+plot(fib_78_6, title="Fibonacci 78.6%", color=color.purple, linewidth=1)
+plot(fib_100, title="Fibonacci 100%", color=color.red, linewidth=1)

@@ -19,16 +19,16 @@ p2 = plot(lower, color=color.green, title="Lower Band")
 fill(p1, p2, color=color.rgb(0, 0, 255, 90))
 
 // Trading signals
-buy_signal = na
-sell_signal = na
+var bool buy_signal = false
+var bool sell_signal = false
 
 if (timeframe.period == "5" or timeframe.period == "5T")
     buy_signal := ta.crossover(src, lower)
     sell_signal := ta.crossunder(src, upper)
 
 // Plot signals on the chart
-plotshape(series=buy_signal, title="Buy Signal", location=location.belowbar, color=color.green, style=shape.labelup, text="BUY")
-plotshape(series=sell_signal, title="Sell Signal", location=location.abovebar, color=color.red, style=shape.labeldown, text="SELL")
+plotshape(series=buy_signal ? buy_signal : na, title="Buy Signal", location=location.belowbar, color=color.green, style=shape.labelup, text="BUY")
+plotshape(series=sell_signal ? sell_signal : na, title="Sell Signal", location=location.abovebar, color=color.red, style=shape.labeldown, text="SELL")
 
 // Alerts
 alertcondition(buy_signal, title="Buy Alert 5 Min", message="Buy Signal Detected on 5 Minute Timeframe")
