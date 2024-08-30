@@ -1,0 +1,35 @@
+//@version=5
+indicator("Bollinger Bands Scalping Strategy - 5 Minute Signals", overlay=true)
+
+// Parameters for Bollinger Bands
+length = input(20, title="Length")
+src = input(close, title="Source")
+mult = input(2.0, title="Multiplier")
+
+// Calculate Bollinger Bands
+basis = ta.sma(src, length)
+dev = mult * ta.stdev(src, length)
+upper = basis + dev
+lower = basis - dev
+
+// Plot Bollinger Bands
+plot(basis, color=color.blue, title="Middle Band")
+p1 = plot(upper, color=color.red, title="Upper Band")
+p2 = plot(lower, color=color.green, title="Lower Band")
+fill(p1, p2, color=color.rgb(0, 0, 255, 90))
+
+// Trading signals
+buy_signal = na
+sell_signal = na
+
+if (timeframe.period == "5" or timeframe.period == "5T")
+    buy_signal := ta.crossover(src, lower)
+    sell_signal := ta.crossunder(src, upper)
+
+// Plot signals on the chart
+plotshape(series=buy_signal, title="Buy Signal", location=location.belowbar, color=color.green, style=shape.labelup, text="BUY")
+plotshape(series=sell_signal, title="Sell Signal", location=location.abovebar, color=color.red, style=shape.labeldown, text="SELL")
+
+// Alerts
+alertcondition(buy_signal, title="Buy Alert 5 Min", message="Buy Signal Detected on 5 Minute Timeframe")
+alertcondition(sell_signal, title="Sell Alert 5 Min", message="Sell Signal Detected on 5 Minute Timeframe")
